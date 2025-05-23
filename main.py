@@ -3,6 +3,7 @@ import smtplib
 from email.message import EmailMessage
 from dotenv import load_dotenv
 import os
+from datetime import datetime
 
 load_dotenv()
 
@@ -21,10 +22,13 @@ print(reminders)
 for r in reminders:
     msg = EmailMessage()
     msg['Subject'] = "⏰ Your Reminder for Today"
-    msg['From'] = "app10flask@gmail.com"
+    msg['From'] = "Ardit Sulce"
     msg['To'] = r['email']
     msg.set_content(f"Message: {r['message']}\n"
                     f"Date: {r['date']}\n"
                     f"Time: {r['time']}")
 
-    print(msg)
+    with smtplib.SMTP("smtp.gmail.com", 587) as smtp:
+        smtp.starttls()
+        smtp.login(email_address, email_password)
+        smtp.send_message(msg)
