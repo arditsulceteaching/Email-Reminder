@@ -1,6 +1,16 @@
 import csv
 import smtplib
 from email.message import EmailMessage
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+email_address = os.getenv("EMAIL_ADDRESS")
+email_password = os.getenv("EMAIL_PASSWORD")
+
+print(email_address)
+print(email_password)
 
 with open("reminders.csv") as file:
     reader = csv.DictReader(file)
@@ -16,4 +26,5 @@ for r in reminders:
     msg.set_content(f"Message: {r['message']}\n"
                     f"Date: {r['date']}\n"
                     f"Time: {r['time']}")
+
     print(msg)
