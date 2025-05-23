@@ -20,15 +20,15 @@ with open("reminders.csv") as file:
 print(reminders)
 
 for r in reminders:
-    msg = EmailMessage()
-    msg['Subject'] = "⏰ Your Reminder for Today"
-    msg['From'] = "Ardit Sulce"
-    msg['To'] = r['email']
-    msg.set_content(f"Message: {r['message']}\n"
-                    f"Date: {r['date']}\n"
-                    f"Time: {r['time']}")
-
-    with smtplib.SMTP("smtp.gmail.com", 587) as smtp:
-        smtp.starttls()
-        smtp.login(email_address, email_password)
-        smtp.send_message(msg)
+    if r['date'] == datetime.now().strftime("%Y-%m-%d"):
+        msg = EmailMessage()
+        msg['Subject'] = "⏰ Your Reminder for Today"
+        msg['From'] = "Ardit Sulce"
+        msg['To'] = r['email']
+        msg.set_content(f"Message: {r['message']}\n"
+                        f"Date: {r['date']}\n"
+                        f"Time: {r['time']}")
+        with smtplib.SMTP("smtp.gmail.com", 587) as smtp:
+            smtp.starttls()
+            smtp.login(email_address, email_password)
+            smtp.send_message(msg)
