@@ -17,7 +17,7 @@ with open("reminders.csv") as file:
     reader = csv.DictReader(file)
     reminders = list(reader)
 
-print(reminders)
+remaining = []
 
 for r in reminders:
     if r['date'] == datetime.now().strftime("%Y-%m-%d"):
@@ -32,3 +32,13 @@ for r in reminders:
             smtp.starttls()
             smtp.login(email_address, email_password)
             smtp.send_message(msg)
+    else:
+        remaining.append(r)
+
+print(remaining)
+
+with open("reminders.csv", "w") as file:
+    writer = csv.DictWriter(file,
+                            fieldnames=["date", "time", "email", "message"])
+    writer.writeheader()
+    writer.writerows(remaining)
