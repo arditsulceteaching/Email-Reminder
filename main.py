@@ -45,9 +45,16 @@ def save_reminders(remaining):
         writer.writerows(remaining)
 
 def calculate_next_date(date_str, repeat_interval):
-    ...
-    ..
-    return
+    date = datetime.strptime(date_str, '%Y-%m-%d')
+    unit = repeat_interval[-1]
+    value = int(repeat_interval[:-1])
+    if unit == 'm':
+        next_date = date + relativedelta.relativedelta(months=value)
+    if unit == 'w':
+        next_date = date + relativedelta.relativedelta(weeks=value)
+    if unit == 'd':
+        next_date = date + relativedelta.relativedelta(days=value)
+    return next_date.strftime('%Y-%m-%d')
 
 
 reminders = load_reminders()
@@ -63,7 +70,8 @@ for r in reminders:
         smtp.send_message(msg)
         if r.get('repeat_interval'):
             next_date = calculate_next_date(r['date'], r['repeat_interval'])
-
+            r['date'] = next_date
+            remaining.append(r)
     else:
         remaining.append(r)
 
