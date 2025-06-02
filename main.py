@@ -5,41 +5,57 @@ from dotenv import load_dotenv
 import os
 from datetime import datetime
 
-load_dotenv()
+def load_credentials():
+    load_dotenv()
 
-email_address = os.getenv("EMAIL_ADDRESS")
-email_password = os.getenv("EMAIL_PASSWORD")
+    email_address = os.getenv("EMAIL_ADDRESS")
+    email_password = os.getenv("EMAIL_PASSWORD")
+    return email_address, email_password
 
 
-with open("reminders.csv") as file:
-    reader = csv.DictReader(file)
-    reminders = list(reader)
+def load_reminders(filepath="reminders.csv"):
+    with open(filepath) as file:
+        reader = csv.DictReader(file)
+        reminders = list(reader)
+        return reminders
 
-remaining = []
 
-today = datetime.now().strftime("%Y-%m-%d")
-
-with smtplib.SMTP("smtp.gmail.com", 587) as smtp:
+def login_to_email(email_address, email_password):
+    smtp = smtplib.SMTP("smtp.gmail.com", 587)
     smtp.starttls()
     smtp.login(email_address, email_password)
+    return smtp
 
-    for r in reminders:
-        if r['date'] == today:
-            msg = EmailMessage()
-            msg['Subject'] = "⏰ Your Reminder for Today"
-            msg['From'] = "Ardit Sulce"
-            msg['To'] = r['email']
-            msg.set_content(f"Message: {r['message']}\n"
-                            f"Date: {r['date']}\n"
-                            f"Time: {r['time']}")
+def create_email(r):
+    msg = EmailMessage()
+    msg['Subject'] = "⏰ Your Reminder for Today"
+    msg['From'] = "Ardit Sulce"
+    msg['To'] = r['email']
+    msg.set_content(f"Message: {r['message']}\n"
+                    f"Date: {r['date']}\n"
+                    f"Time: {r['time']}")
+    return msg
 
-            smtp.send_message(msg)
-        else:
-            remaining.append(r)
+def save_reminders(remaining):
+    with open("reminders.csv", "w") as file:
+        writer = csv.DictWriter(file,
+                                fieldnames=["date", "time", "email", "message"])
+        writer.writeheader()
+        writer.writerows(remaining)
 
 
-with open("reminders.csv", "w") as file:
-    writer = csv.DictWriter(file,
-                            fieldnames=["date", "time", "email", "message"])
-    writer.writeheader()
-    writer.writerows(remaining)
+reminders = load_reminders()
+today = datetime.now().strftime("%Y-%m-%d")
+remaining = []
+email_address, email_password = load_credentials()
+smtp = login_to_email(email_address, email_password)
+
+for r in reminders:
+    if r['date'] == today:
+
+        msg = create_email(r)
+        smtp.send_message(msg)
+    else:
+        remaining.append(r)
+
+save_reminders(remaining)
