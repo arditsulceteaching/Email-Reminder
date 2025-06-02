@@ -4,6 +4,7 @@ from email.message import EmailMessage
 from dotenv import load_dotenv
 import os
 from datetime import datetime
+import dateutil.relativedelta as relativedelta
 
 def load_credentials():
     load_dotenv()
@@ -39,9 +40,14 @@ def create_email(r):
 def save_reminders(remaining):
     with open("reminders.csv", "w") as file:
         writer = csv.DictWriter(file,
-                                fieldnames=["date", "time", "email", "message"])
+                                fieldnames=["date", "time", "email", "message", "repeat_interval"])
         writer.writeheader()
         writer.writerows(remaining)
+
+def calculate_next_date(date_str, repeat_interval):
+    ...
+    ..
+    return
 
 
 reminders = load_reminders()
@@ -55,6 +61,9 @@ for r in reminders:
 
         msg = create_email(r)
         smtp.send_message(msg)
+        if r.get('repeat_interval'):
+            next_date = calculate_next_date(r['date'], r['repeat_interval'])
+
     else:
         remaining.append(r)
 
