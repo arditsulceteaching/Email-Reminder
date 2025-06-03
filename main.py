@@ -40,7 +40,8 @@ def create_email(r):
 def save_reminders(remaining):
     with open("reminders.csv", "w") as file:
         writer = csv.DictWriter(file,
-                                fieldnames=["date", "time", "email", "message", "repeat_interval"])
+                                fieldnames=["date", "time", "email",
+                                            "message", "repeat_interval"])
         writer.writeheader()
         writer.writerows(remaining)
 
@@ -50,9 +51,9 @@ def calculate_next_date(date_str, repeat_interval):
     value = int(repeat_interval[:-1])
     if unit == 'm':
         next_date = date + relativedelta.relativedelta(months=value)
-    if unit == 'w':
+    elif unit == 'w':
         next_date = date + relativedelta.relativedelta(weeks=value)
-    if unit == 'd':
+    elif unit == 'd':
         next_date = date + relativedelta.relativedelta(days=value)
     return next_date.strftime('%Y-%m-%d')
 
@@ -65,7 +66,6 @@ smtp = login_to_email(email_address, email_password)
 
 for r in reminders:
     if r['date'] == today:
-
         msg = create_email(r)
         smtp.send_message(msg)
         if r.get('repeat_interval'):
