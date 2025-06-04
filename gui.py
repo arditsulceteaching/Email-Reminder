@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import (QApplication, QWidget, QLabel, QVBoxLayout,
                              QSpacerItem, QSizePolicy, QHBoxLayout,
                              QPushButton)
 from PyQt6.QtCore import QDateTime
-import sys
+import sys, requests
 
 class ReminderApp(QWidget):
     def __init__(self):
@@ -43,6 +43,7 @@ class ReminderApp(QWidget):
 
         button_layout = QHBoxLayout()
         self.submit_button = QPushButton("Add Reminder")
+        self.submit_button.clicked.connect(self.submit_reminder)
         self.close_button = QPushButton("Close")
         button_layout.addWidget(self.submit_button)
         button_layout.addWidget(self.close_button)
@@ -52,6 +53,17 @@ class ReminderApp(QWidget):
                                          QSizePolicy.Policy.Minimum,
                                          QSizePolicy.Policy.Expanding))
         self.setLayout(layout)
+
+    def submit_reminder(self):
+        data = {"date": "2025-06-15",
+                "time": "8:00",
+                "email": "hey@gmail.com",
+                "message": "Buy bread",
+                "repeat_interval": "3d"}
+
+        response = requests.post(
+            "http://realworldpython.pythonanywhere.com/add",
+            json=data)
 
 app = QApplication(sys.argv)
 window = ReminderApp()
