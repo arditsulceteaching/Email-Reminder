@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import (QApplication, QWidget, QLabel, QVBoxLayout,
                              QDateTimeEdit, QLineEdit, QTextEdit,
                              QSpacerItem, QSizePolicy, QHBoxLayout,
-                             QPushButton)
+                             QPushButton, QMessageBox)
 from PyQt6.QtCore import QDateTime
 import sys, requests
 
@@ -41,10 +41,12 @@ class ReminderApp(QWidget):
         layout.addWidget(self.repeat_label)
         layout.addWidget(self.repeat_input)
 
+        # Buttons layout
         button_layout = QHBoxLayout()
         self.submit_button = QPushButton("Add Reminder")
         self.submit_button.clicked.connect(self.submit_reminder)
         self.close_button = QPushButton("Close")
+        self.close_button.clicked.connect(self.close)
         button_layout.addWidget(self.submit_button)
         button_layout.addWidget(self.close_button)
         layout.addLayout(button_layout)
@@ -66,6 +68,12 @@ class ReminderApp(QWidget):
         response = requests.post(
             "http://realworldpython.pythonanywhere.com/add",
             json=data)
+
+        if response.status_code == 200:
+            QMessageBox.information(self, "Success", "Reminder added successfully!")
+            self.reminder_input.clear()
+            self.repeat_input.clear()
+
 
 app = QApplication(sys.argv)
 window = ReminderApp()
