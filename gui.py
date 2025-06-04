@@ -55,11 +55,13 @@ class ReminderApp(QWidget):
         self.setLayout(layout)
 
     def submit_reminder(self):
-        data = {"date": "2025-06-15",
-                "time": "8:00",
-                "email": "hey@gmail.com",
-                "message": "Buy bread",
-                "repeat_interval": "3d"}
+        datetime = self.datetime_picker.dateTime().toString("yyyy-MM-dd HH:mm")
+        date, time = datetime.split(" ")
+        data = {"date": date,
+                "time": time,
+                "email": self.email_input.text(),
+                "message": self.reminder_input.toPlainText(),
+                "repeat_interval": self.repeat_input.text()}
 
         response = requests.post(
             "http://realworldpython.pythonanywhere.com/add",
