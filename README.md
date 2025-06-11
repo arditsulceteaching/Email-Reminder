@@ -7,6 +7,10 @@ This project is part of the **Real World Python** course series and demonstrates
 - 🖥️ GUI with PyQt6
 - 🌐 API-based integration with a remote server (PythonAnywhere)
 
+The video course can be purchased on Udemy at the following link:
+
+https://www.udemy.com/course/real-world-python-series-build-an-email-reminder-app/
+
 ---
 
 ## 🚀 Features
@@ -88,7 +92,8 @@ It will:
 
 ## 🎓 Course Link
 
-👉 Enroll in the full **Real World Python: Build an Email Reminder App** course on Udemy: https://udemy.com/user/adiune.
+👉 Enroll in the full **Real World Python: Build an Email Reminder App** course on Udemy: 
+https://www.udemy.com/course/real-world-python-series-build-an-email-reminder-app/
 
 ---
 
